@@ -216,7 +216,7 @@ redircmd(struct cmd *subcmd, char *file, char *efile, int mode, int fd)
   cmd->efile = efile;
   cmd->mode = mode;
   cmd->fd = fd;
-  return (struct cmd*)cmd;
+  return (struct cmd*)cmd;  
 }
 
 struct cmd*
