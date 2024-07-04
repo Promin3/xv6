@@ -36,3 +36,11 @@ entry("getpid");
 entry("sbrk");
 entry("sleep");
 entry("uptime");
+entry("trace");
+
+# eg
+# .global fork
+# fork:
+#  li a7, SYS_fork
+#  ecall
+#  ret
