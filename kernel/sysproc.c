@@ -6,6 +6,7 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
+#include "sysinfo.h"
 
 uint64
 sys_exit(void)
@@ -96,12 +97,33 @@ sys_uptime(void)
   return xticks;
 }
 
+
 uint64
 sys_trace(void){
   int mask;
-  if(argint(0, &mask) < 0) // 从用户空间读取
+  if(argint(0, &mask) < 0) // 从用户空间读取，系统调用使用函数传参，需要借助trapframe
     return -1;
   
   myproc()->traceMask = mask;
   return 0;
+}
+
+
+uint64
+sys_sysinfo(void){
+  struct sysinfo sinfo;
+  struct proc *p = myproc();
+  uint64 addr;
+
+  if(argaddr(0, &addr) < 0){
+    return -1;
+  }else{
+
+    sinfo.freemem = countfreemem();
+    sinfo.nproc = countnproc();
+
+    if(copyout(p->pagetable, addr, (char *)&sinfo, sizeof sinfo) < 0)
+      return -1;
+    return 0;
+  }
 }
