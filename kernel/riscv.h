@@ -335,7 +335,10 @@ sfence_vma()
 #define PGSIZE 4096 // bytes per page
 #define PGSHIFT 12  // bits of offset within a page
 
+//将 sz 向上对齐到最近的页面边界。如果 sz 本身已经是页面大小的整数倍，结果就是 sz 本身；否则，它将向上取整到下一个页面大小的整数倍。
 #define PGROUNDUP(sz)  (((sz)+PGSIZE-1) & ~(PGSIZE-1))
+
+//将地址对齐到当前页的起始地址，如果 a 是 4097，那么 4097 & 0xFFFFF000 得到的结果是 4096，即当前页的起始地址
 #define PGROUNDDOWN(a) (((a)) & ~(PGSIZE-1))
 
 #define PTE_V (1L << 0) // valid

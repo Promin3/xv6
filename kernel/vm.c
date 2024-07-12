@@ -21,6 +21,7 @@ kvmmake(void)
 {
   pagetable_t kpgtbl;
 
+  // hold the root page-table page
   kpgtbl = (pagetable_t) kalloc();
   memset(kpgtbl, 0, PGSIZE);
 
@@ -279,6 +280,30 @@ freewalk(pagetable_t pagetable)
     }
   }
   kfree((void*)pagetable);
+}
+
+void 
+vmprint(pagetable_t pagetabel){
+  printf("page table %p\n", pagetabel);
+  truevmprint(pagetabel, 1);
+}
+
+void 
+truevmprint(pagetable_t pagetable, int deepth){
+  for (int i = 0; i < 512; i++)
+  {
+    pte_t pte = pagetable[i];
+    if((pte & PTE_V) && (pte & (PTE_R|PTE_W|PTE_X)) == 0){
+      for(int j = deepth; j >= 1; j--) printf(" ..");
+      uint64 child = PTE2PA(pte);
+      printf("%d: pte %p pa %p\n", i, pte, child);
+      truevmprint((pagetable_t)child,++deepth);
+      --deepth;
+    }else if(pte & PTE_V){
+      for(int j = deepth; j >= 1; j--) printf(" ..");
+      printf("%d: pte %p pa %p\n", i, pte, PTE2PA(pte));
+    }
+  }
 }
 
 // Free user memory pages,
