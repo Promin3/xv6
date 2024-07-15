@@ -105,4 +105,12 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+
+  int alarminterval;
+  void (*handler)();
+  int tickspassed;
+
+  int is_alarming;             // if a handler hasn't returned yet, the kernel shouldn't call it again.
+  struct trapframe *alarm_trapframe; // when enter the handler,return to user space. handler may change 
+                                     // the status of origin register(which we should preserve)
 };

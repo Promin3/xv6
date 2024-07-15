@@ -137,13 +137,12 @@ printfinit(void)
 void backtrace(){
   uint64 frameptr = r_fp();
   printf("backtrace:\n");
-  //printf("pgstart : %p\n", PGROUNDDOWN(frameptr));
-  while(frameptr != PGROUNDDOWN(frameptr))
+  uint64 start = PGROUNDUP(frameptr);
+  while(frameptr != start)
   {
     
     uint64 ra = *(uint64 *)(frameptr - 8);
     printf("%p\n", ra);
     frameptr = *(uint64 *)(frameptr - 16);
-    //printf("pgstart : %p\n", PGROUNDDOWN(frameptr));
   }
 }
